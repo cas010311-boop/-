@@ -152,6 +152,19 @@ async function startServer() {
         }
       }
 
+      // Self-healing profile image correction to always map to the downloaded public/profile.jpg
+      if (data.profile) {
+        if (data.profile.profileImage !== "profile.jpg") {
+          data.profile.profileImage = "profile.jpg";
+          try {
+            await setDoc(profileRef, { profile: data.profile }, { merge: true });
+            console.log("Self-healed profileImage in Firestore!");
+          } catch (err) {
+            console.error("Failed to self-heal profileImage in Firestore:", err);
+          }
+        }
+      }
+
       return res.json(data);
     } catch (e) {
       console.error("Error fetching data from Firestore:", e);
