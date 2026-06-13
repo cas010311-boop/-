@@ -64,8 +64,11 @@ export default function App() {
           setProfile(data.profile);
           localStorage.setItem('choi_ajin_profile', JSON.stringify(data.profile));
         } else {
-          // If Firestore is empty (for instance, on first launch), seed it with current baseline/local data
-          handleSaveProfile(profile);
+          // If Firestore is empty (for instance, on first launch), seed it ONLY if we have custom local data in the browser
+          const hasLocalSaved = localStorage.getItem('choi_ajin_profile');
+          if (hasLocalSaved) {
+            handleSaveProfile(profile);
+          }
         }
 
         const hasOldPhotos = data.photos && data.photos.some((p: any) => p.src && p.src.includes('port'));
