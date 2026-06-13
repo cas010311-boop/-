@@ -3,15 +3,14 @@
  */
 
 /**
- * Converts an Instagram post, reel, or TV video image URL into a direct-linkable high-quality image URL.
- * If the URL is not from Instagram, it returns the URL unchanged.
+ * Converts an Instagram post, reel, or TV video image URL into a server-side proxied image URL.
+ * This avoids CORS/Referer 403 errors and expired Instagram tokens.
  */
 export function getInstagramImageUrl(url: string): string {
   if (!url) return '';
   const trimmed = url.trim();
   
-  // If it already is a converted media link or an upload (base64)
-  if (trimmed.includes('/media/?size=') || trimmed.startsWith('data:')) {
+  if (trimmed.startsWith('/api/instagram-image') || trimmed.startsWith('data:')) {
     return trimmed;
   }
   
@@ -19,8 +18,7 @@ export function getInstagramImageUrl(url: string): string {
   const match = trimmed.match(/instagram\.com\/(p|reel|tv)\/([^/?#]+)/i);
                 
   if (match && match[2]) {
-    const postId = match[2];
-    return `https://www.instagram.com/p/${postId}/media/?size=l`;
+    return `/api/instagram-image?url=${encodeURIComponent(trimmed)}`;
   }
   
   return trimmed;

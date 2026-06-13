@@ -33,15 +33,126 @@ async function startServer() {
     console.error("Warning: Initial connection to Firestore had issues:", error);
   }
 
+  // API Route: Proxy Instagram media requests using unblocked embed meta scraping to bypass browser hotlinking/CORS 403 blocks
+  app.get("/api/instagram-image", async (req, res) => {
+    const imageUrl = req.query.url as string;
+    if (!imageUrl) {
+      return res.status(400).send("Source URL is required");
+    }
+
+    try {
+      // Parse out post ID from Instagram post/reel/tv URL
+      const match = imageUrl.match(/instagram\.com\/(p|reel|tv)\/([^/?#]+)/i);
+      if (!match || !match[2]) {
+        return res.status(400).send("Invalid Instagram URL");
+      }
+      const postId = match[2];
+      const embedUrl = `https://www.instagram.com/p/${postId}/embed/`;
+
+      // Fetch the public embed page designed for search engines/social previews (never blocked)
+      const pageResponse = await fetch(embedUrl, {
+        headers: {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        }
+      });
+
+      if (!pageResponse.ok) {
+        console.error(`Instagram embed fetch failed: ${pageResponse.status} ${pageResponse.statusText}`);
+        return res.status(pageResponse.status).send(`Failed to grab image metadata: ${pageResponse.statusText}`);
+      }
+
+      const html = await pageResponse.text();
+
+      // Find the og:image meta tag
+      const ogImageMatch = html.match(/<meta\s+property="og:image"\s+content="([^"]+)"/i) || 
+                           html.match(/<meta\s+content="([^"]+)"\s+property="og:image"/i) ||
+                           html.match(/meta\s+name="twitter:image"\s+content="([^"]+)"/i);
+
+      let directCdnUrl: string | null = null;
+      if (ogImageMatch && ogImageMatch[1]) {
+        directCdnUrl = ogImageMatch[1]
+          .replace(/&amp;/g, "&")
+          .replace(/\\u0026/g, "&")
+          .replace(/\\/g, "");
+      }
+
+      if (!directCdnUrl) {
+        // Fallback: search for display_url in post JSON payloads
+        const displayUrlMatch = html.match(/"display_url"\s*:\s*"([^"]+)"/);
+        if (displayUrlMatch && displayUrlMatch[1]) {
+          directCdnUrl = displayUrlMatch[1]
+            .replace(/&amp;/g, "&")
+            .replace(/\\u0026/g, "&")
+            .replace(/\\/g, "");
+        }
+      }
+
+      if (!directCdnUrl) {
+        console.error("Could not parse image URL from Instagram embed page for post:", postId);
+        return res.status(404).send("Image URL not found in post metadata");
+      }
+
+      // Download the clean image from Instagram CDN
+      const imgRes = await fetch(directCdnUrl, {
+        headers: {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+          "Accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8"
+        }
+      });
+
+      if (!imgRes.ok) {
+        console.error(`Failed to stream image from CDN logic: ${imgRes.status}`);
+        return res.status(imgRes.status).send("Failed to stream image from Instagram CDN");
+      }
+
+      const contentType = imgRes.headers.get("content-type") || "image/jpeg";
+      res.setHeader("Content-Type", contentType);
+      res.setHeader("Cache-Control", "public, max-age=604800"); // Cache inside CDN & browser for 7 days
+
+      const arrayBuffer = await imgRes.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      return res.send(buffer);
+    } catch (e: any) {
+      console.error("Instagram proxy server error:", e);
+      return res.status(500).send(`Server error: ${e.message}`);
+    }
+  });
+
   // API Route: Get portfolio settings
   app.get("/api/portfolio/data", async (req, res) => {
     try {
-      const docRef = doc(db, "portfolio", "global_config");
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        return res.json(docSnap.data());
+      const profileRef = doc(db, "portfolio", "profile");
+      const photosRef = doc(db, "portfolio", "photos");
+
+      const [profileSnap, photosSnap] = await Promise.all([
+        getDoc(profileRef),
+        getDoc(photosRef)
+      ]);
+
+      const data: any = {};
+      if (profileSnap.exists()) {
+        data.profile = profileSnap.data().profile;
       }
-      return res.json({});
+      if (photosSnap.exists()) {
+        data.photos = photosSnap.data().photos;
+      }
+
+      // Legacy fallback migration: if the split documents don't exist yet, check the old combined config document
+      if (!data.profile || !data.photos) {
+        const legacyRef = doc(db, "portfolio", "global_config");
+        const legacySnap = await getDoc(legacyRef);
+        if (legacySnap.exists()) {
+          const legacyData = legacySnap.data();
+          if (!data.profile && legacyData.profile) {
+            data.profile = legacyData.profile;
+          }
+          if (!data.photos && legacyData.photos) {
+            data.photos = legacyData.photos;
+          }
+        }
+      }
+
+      return res.json(data);
     } catch (e) {
       console.error("Error fetching data from Firestore:", e);
       return res.status(500).json({ error: "Failed to read portfolio from database" });
@@ -52,7 +163,7 @@ async function startServer() {
   app.post("/api/portfolio/save-profile", async (req, res) => {
     const { profile } = req.body;
     try {
-      const docRef = doc(db, "portfolio", "global_config");
+      const docRef = doc(db, "portfolio", "profile");
       await setDoc(docRef, { profile }, { merge: true });
       res.json({ success: true });
     } catch (err) {
@@ -65,7 +176,7 @@ async function startServer() {
   app.post("/api/portfolio/save-photos", async (req, res) => {
     const { photos } = req.body;
     try {
-      const docRef = doc(db, "portfolio", "global_config");
+      const docRef = doc(db, "portfolio", "photos");
       await setDoc(docRef, { photos }, { merge: true });
       res.json({ success: true });
     } catch (err) {

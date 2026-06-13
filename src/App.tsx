@@ -66,12 +66,18 @@ export default function App() {
           // If Firestore is empty (for instance, on first launch), seed it with current baseline/local data
           handleSaveProfile(profile);
         }
-        if (data.photos) {
+
+        const hasOldPhotos = data.photos && data.photos.some((p: any) => p.src && p.src.includes('port'));
+        const hasOldP1 = data.photos && data.photos.length > 0 && data.photos[0].src && data.photos[0].src.includes('Cz3JeAZLAeJ');
+        
+        if (data.photos && data.photos.length > 0 && !hasOldPhotos && !hasOldP1) {
           setPhotos(data.photos);
           localStorage.setItem('choi_ajin_photos', JSON.stringify(data.photos));
         } else {
-          // Seed the database with the default photos
-          handleSavePhotos(photos);
+          // Seed/Overwrite database with the default Instagram photos (with our new test post!)
+          setPhotos(INITIAL_PHOTOS);
+          localStorage.setItem('choi_ajin_photos', JSON.stringify(INITIAL_PHOTOS));
+          handleSavePhotos(INITIAL_PHOTOS);
         }
       })
       .catch(err => {

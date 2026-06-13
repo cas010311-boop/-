@@ -300,7 +300,7 @@ export const INITIAL_PHOTOS: PhotoItem[] = [
   {
     id: "p1",
     title: "Instagram Work 1",
-    src: "https://www.instagram.com/p/Cz3JeAZLAeJ/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+    src: "https://www.instagram.com/p/DZhZfN6D9XZ/",
     fallbackText: "https://images.unsplash.com/photo-1542038784456-1ea8e935640e?auto=format&fit=crop&q=80&w=600"
   },
   {

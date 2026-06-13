@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ChevronLeft, ChevronRight, Download, Link2 } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Download, Link2, Eye, Image as ImageIcon } from 'lucide-react';
 import { PhotoItem } from '../types';
 import { getInstagramImageUrl } from '../utils';
 
@@ -38,6 +38,10 @@ export default function Lightbox({
 
   if (!isOpen || !currentPhoto) return null;
 
+  // Extract Instagram ID
+  const instagramMatch = currentPhoto.src.match(/instagram\.com\/(p|reel|tv)\/([^/?#]+)/i);
+  const postId = instagramMatch ? instagramMatch[2] : null;
+
   return (
     <AnimatePresence>
       <motion.div
@@ -61,7 +65,7 @@ export default function Lightbox({
               target="_blank"
               rel="noopener noreferrer"
               className="p-2.5 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-accent hover:border-accent/40 hover:bg-zinc-800 transition-all"
-              title="원본 이미지 주소"
+              title="원본 인스타그램 게시물"
             >
               <Link2 className="w-5 h-5" />
             </a>
@@ -89,17 +93,32 @@ export default function Lightbox({
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
           transition={{ duration: 0.3 }}
-          className="relative max-w-5xl max-h-[75vh] md:max-h-[80vh] flex items-center justify-center pointer-events-auto"
+          className="relative max-w-5xl max-h-[85vh] md:max-h-[90vh] flex items-center justify-center pointer-events-auto"
         >
-          <img
-            src={getInstagramImageUrl(currentPhoto.src)}
-            alt={currentPhoto.title}
-            className="max-w-[90vw] max-h-[70vh] md:max-h-[80vh] object-contain rounded-lg border border-zinc-800"
-            onError={(e) => {
-              // Automatically load fallback public high aesthetic Unsplash image
-              e.currentTarget.src = currentPhoto.fallbackText;
-            }}
-          />
+          {postId ? (
+            <div className="flex flex-col items-center bg-zinc-950/40 p-3 rounded-2xl border border-zinc-900/45">
+              <iframe
+                src={`https://www.instagram.com/p/${postId}/embed/captioned/?cr=1&v=14`}
+                className="w-[295px] sm:w-[380px] md:w-[480px] lg:w-[520px] h-[550px] sm:h-[660px] md:h-[740px] lg:h-[780px] max-h-[82vh] rounded-xl border-0 shadow-2xl bg-white select-none pointer-events-auto"
+                scrolling="no"
+                frameBorder="0"
+                allowFullScreen
+                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+              ></iframe>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center gap-4">
+              <img
+                src={getInstagramImageUrl(currentPhoto.src)}
+                alt={currentPhoto.title}
+                className="max-w-[90vw] max-h-[65vh] md:max-h-[72vh] object-contain rounded-lg border border-zinc-850 shadow-2xl"
+                onError={(e) => {
+                  // Automatically load fallback public high aesthetic Unsplash image
+                  e.currentTarget.src = currentPhoto.fallbackText;
+                }}
+              />
+            </div>
+          )}
         </motion.div>
 
         {/* Next Navigation Button */}
@@ -112,8 +131,8 @@ export default function Lightbox({
 
         {/* Footer info/controls */}
         <div className="absolute bottom-6 text-center select-none">
-          <p className="text-xs text-zinc-500 max-w-xs leading-relaxed font-sans font-light">
-            ※ 원본 이미지가 로드되지 않을 경우, 데모 플레이스홀더 이미지가 자동으로 적용됩니다.
+          <p className="text-[10px] md:text-xs text-zinc-500 max-w-sm leading-relaxed font-sans font-light">
+            ※ 상세 피드 뷰에서는 실시간 슬라이드 스와이프, 동영상 재생 및 정보 확인이 가능합니다.
           </p>
         </div>
       </motion.div>
