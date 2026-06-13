@@ -10,6 +10,8 @@ import VideoCard from './components/VideoCard';
 import PhotoGrid from './components/PhotoGrid';
 import Lightbox from './components/Lightbox';
 import ImageCustomizer from './components/ImageCustomizer';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { db } from './firebase';
 
 export default function App() {
   // Load settings from localstorage if available as baseline
@@ -53,25 +55,25 @@ export default function App() {
 
   // Fetch true server-side saved settings on startup to ensure persistence for all visitors
   useEffect(() => {
-    fetch('/api/portfolio/data')
-      .then(res => {
-        if (res.ok) return res.json();
-        throw new Error('Server returned error status');
-      })
-      .then(data => {
-        if (data.profile) {
-          setProfile(data.profile);
-          // Keep localStorage up-to-date
-          localStorage.setItem('choi_ajin_profile', JSON.stringify(data.profile));
-        }
-        if (data.photos) {
-          setPhotos(data.photos);
-          // Keep localStorage up-to-date
-          localStorage.setItem('choi_ajin_photos', JSON.stringify(data.photos));
+    const docRef = doc(db, "portfolio", "global_config");
+    getDoc(docRef)
+      .then(docSnap => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          if (data.profile) {
+            setProfile(data.profile);
+            // Keep localStorage up-to-date
+            localStorage.setItem('choi_ajin_profile', JSON.stringify(data.profile));
+          }
+          if (data.photos) {
+            setPhotos(data.photos);
+            // Keep localStorage up-to-date
+            localStorage.setItem('choi_ajin_photos', JSON.stringify(data.photos));
+          }
         }
       })
       .catch(err => {
-        console.log('Using browser local state as fallback:', err);
+        console.error('Error fetching data directly from Firestore on client side:', err);
       });
   }, []);
 
@@ -88,15 +90,10 @@ export default function App() {
     setProfile(newProfile);
     localStorage.setItem('choi_ajin_profile', JSON.stringify(newProfile));
     try {
-      await fetch('/api/portfolio/save-profile', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ profile: newProfile }),
-      });
+      const docRef = doc(db, "portfolio", "global_config");
+      await setDoc(docRef, { profile: newProfile }, { merge: true });
     } catch (e) {
-      console.error('Failed to sync profile change to server:', e);
+      console.error('Failed to sync profile change directly to Firestore:', e);
     }
   };
 
@@ -104,15 +101,10 @@ export default function App() {
     setPhotos(newPhotos);
     localStorage.setItem('choi_ajin_photos', JSON.stringify(newPhotos));
     try {
-      await fetch('/api/portfolio/save-photos', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ photos: newPhotos }),
-      });
+      const docRef = doc(db, "portfolio", "global_config");
+      await setDoc(docRef, { photos: newPhotos }, { merge: true });
     } catch (e) {
-      console.error('Failed to sync photos change to server:', e);
+      console.error('Failed to sync photos change directly to Firestore:', e);
     }
   };
 
