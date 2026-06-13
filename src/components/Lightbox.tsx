@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ChevronLeft, ChevronRight, Download, Link2 } from 'lucide-react';
 import { PhotoItem } from '../types';
+import { getInstagramImageUrl } from '../utils';
 
 interface LightboxProps {
   photos: PhotoItem[];
@@ -91,7 +92,7 @@ export default function Lightbox({
           className="relative max-w-5xl max-h-[75vh] md:max-h-[80vh] flex items-center justify-center pointer-events-auto"
         >
           <img
-            src={currentPhoto.src}
+            src={getInstagramImageUrl(currentPhoto.src)}
             alt={currentPhoto.title}
             className="max-w-[90vw] max-h-[70vh] md:max-h-[80vh] object-contain rounded-lg border border-zinc-800"
             onError={(e) => {

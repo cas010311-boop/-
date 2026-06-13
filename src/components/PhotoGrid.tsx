@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import { Camera, ZoomIn } from 'lucide-react';
 import { PhotoItem } from '../types';
+import { getInstagramImageUrl } from '../utils';
 
 interface PhotoGridProps {
   photos: PhotoItem[];
@@ -32,7 +33,7 @@ export default function PhotoGrid({ photos, onPhotoClick }: PhotoGridProps) {
 
             {/* Main Photo Image with multi-fallback behavior */}
             <img
-              src={photo.src}
+              src={getInstagramImageUrl(photo.src)}
               alt="Choi Ajin Photography"
               loading="lazy"
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 z-10"

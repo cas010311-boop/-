@@ -62,10 +62,16 @@ export default function App() {
         if (data.profile) {
           setProfile(data.profile);
           localStorage.setItem('choi_ajin_profile', JSON.stringify(data.profile));
+        } else {
+          // If Firestore is empty (for instance, on first launch), seed it with current baseline/local data
+          handleSaveProfile(profile);
         }
         if (data.photos) {
           setPhotos(data.photos);
           localStorage.setItem('choi_ajin_photos', JSON.stringify(data.photos));
+        } else {
+          // Seed the database with the default photos
+          handleSavePhotos(photos);
         }
       })
       .catch(err => {

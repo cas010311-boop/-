@@ -298,57 +298,63 @@ export const INITIAL_VIDEOS: VideoItem[] = [
 
 export const INITIAL_PHOTOS: PhotoItem[] = [
   {
-    id: "p40",
-    title: "Port (40)",
-    src: "port (40).jpg",
+    id: "p1",
+    title: "Instagram Work 1",
+    src: "https://www.instagram.com/p/Cz3JeAZLAeJ/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
     fallbackText: "https://images.unsplash.com/photo-1542038784456-1ea8e935640e?auto=format&fit=crop&q=80&w=600"
   },
   {
-    id: "p1",
-    title: "Port (1)",
-    src: "port (1).jpg",
+    id: "p2",
+    title: "Instagram Work 2",
+    src: "https://www.instagram.com/p/DEu0yhczt0r/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
     fallbackText: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=600"
   },
   {
-    id: "p5",
-    title: "Port (5)",
-    src: "port (5).jpg",
+    id: "p3",
+    title: "Instagram Work 3",
+    src: "https://www.instagram.com/p/Cz3I2m1LIn9/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
     fallbackText: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=600"
   },
   {
-    id: "p7",
-    title: "Port (7)",
-    src: "port (7).jpg",
+    id: "p4",
+    title: "Instagram Work 4",
+    src: "https://www.instagram.com/p/CgwL3PwOMau/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
     fallbackText: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=600"
   },
   {
-    id: "p12",
-    title: "Port (12)",
-    src: "port (12).jpg",
+    id: "p5",
+    title: "Instagram Work 5",
+    src: "https://www.instagram.com/p/C9hxkfGT3lk/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
     fallbackText: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=600"
   },
   {
-    id: "p14",
-    title: "Port (14)",
-    src: "port (14).jpg",
+    id: "p6",
+    title: "Instagram Work 6",
+    src: "https://www.instagram.com/p/C9Jx26mSkyr/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
     fallbackText: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=600"
   },
   {
-    id: "p21",
-    title: "Port (21)",
-    src: "port (21).jpg",
+    id: "p7",
+    title: "Instagram Work 7",
+    src: "https://www.instagram.com/p/C9Jx8TyykXV/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
     fallbackText: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=600"
   },
   {
-    id: "p26",
-    title: "Port (26)",
-    src: "port (26).jpg",
+    id: "p8",
+    title: "Instagram Work 8",
+    src: "https://www.instagram.com/p/Cz3JHaurEcK/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
     fallbackText: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=600"
   },
   {
-    id: "p32",
-    title: "Port (32)",
-    src: "port (32).jpg",
+    id: "p9",
+    title: "Instagram Work 9",
+    src: "https://www.instagram.com/p/Cz3JuAer_5v/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
     fallbackText: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=600"
+  },
+  {
+    id: "p10",
+    title: "Instagram Work 10",
+    src: "https://www.instagram.com/p/C7d3XeovWJ4/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+    fallbackText: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=600"
   }
 ];

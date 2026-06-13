@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { X, Save, RotateCcw, Link, MessageSquare, Trash2, Calendar, FileText, Check, Lock, Unlock, Upload } from 'lucide-react';
 import { ProfileData, PhotoItem } from '../types';
+import { getInstagramImageUrl } from '../utils';
+import { INITIAL_PROFILE, INITIAL_PHOTOS } from '../data';
 
 const compressImage = (base64Str: string, maxWidth: number = 600, maxHeight: number = 600, quality: number = 0.5): Promise<string> => {
   return new Promise((resolve) => {
@@ -129,9 +131,14 @@ export default function ImageCustomizer({
   };
 
   const handleReset = () => {
-    if (confirm('모든 설정값을 최초 기본값으로 강제 리셋하시겠습니까? (로컬 전용 데이터 초기화)')) {
+    if (confirm('모든 설정값을 최초 기본값(인스타그램 연동 10개)으로 강제 리셋하고 서버 데이터베이스(Firestore)에도 즉시 반영하시겠습니까?')) {
       localStorage.removeItem('choi_ajin_profile');
       localStorage.removeItem('choi_ajin_photos');
+      
+      onSaveProfile(INITIAL_PROFILE);
+      onSavePhotos(INITIAL_PHOTOS);
+      
+      alert('기본값 복원 및 서버 동기화가 완료되었습니다! 페이지를 새로고침합니다.');
       window.location.reload();
     }
   };
@@ -505,7 +512,7 @@ export default function ImageCustomizer({
                       </div>
                       <div className="w-8 h-8 rounded border border-zinc-800 overflow-hidden bg-zinc-950 flex items-center justify-center relative shrink-0">
                         <img
-                          src={photo.src}
+                          src={getInstagramImageUrl(photo.src)}
                           className="w-full h-full object-cover"
                           onError={(e) => {
                             e.currentTarget.src = photo.fallbackText;
