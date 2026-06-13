@@ -1,0 +1,16 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Allow anyone to read the public portfolio configuration.
+    // Allow writes for customized changes in this single-creator space.
+    match /portfolio/{documentId} {
+      allow read: if true;
+      allow write: if true;
+    }
+  }
+}

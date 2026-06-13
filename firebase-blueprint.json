@@ -1,0 +1,26 @@
+{
+  "entities": {
+    "portfolioData": {
+      "title": "Portfolio Data",
+      "description": "Store customizer profile information and custom portfolio images",
+      "type": "object",
+      "properties": {
+        "profile": {
+          "type": "object",
+          "description": "The dynamic custom profile data"
+        },
+        "photos": {
+          "type": "array",
+          "description": "The custom photos list"
+        }
+      },
+      "required": ["profile", "photos"]
+    }
+  },
+  "firestore": {
+    "portfolio/{documentId}": {
+      "schema": "portfolioData",
+      "description": "Collection storing the single global portfolio configuration"
+    }
+  }
+}
