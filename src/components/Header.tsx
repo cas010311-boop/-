@@ -39,12 +39,19 @@ export default function Header({ onOpenCustomizer }: HeaderProps) {
         }`}
       >
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <a
-            href="#"
-            className="text-2xl font-display font-medium tracking-tighter text-white hover:text-accent transition-colors"
-          >
-            AJIN
-          </a>
+          <div className="flex items-center gap-3">
+             <img 
+               src="/profile.jpg" 
+               alt="Profile" 
+               className="w-10 h-10 rounded-full object-cover border border-white/20"
+             />
+             <a
+               href="#"
+               className="text-2xl font-display font-medium tracking-tighter text-white hover:text-accent transition-colors"
+             >
+               AJIN
+             </a>
+          </div>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center space-x-8 text-sm font-medium tracking-wider">
