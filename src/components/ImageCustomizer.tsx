@@ -347,7 +347,7 @@ export default function ImageCustomizer({
                   </label>
                 </div>
                 <span className="text-[9px] text-zinc-500 mt-1 block">
-                  ※ 직접 프로필 사진을 골라 업로드하거나, 외부 이미지 전용 주소(URL)를 입력해도 완벽히 저장됩니다.
+                  ※ 컴퓨터/폰에 저장된 사진을 직접 업로드하시거나, <strong>인스타그램 게시물 주소(예: https://www.instagram.com/p/...)</strong>를 입력해도 프로필 사진으로 실시간 연동되어 완벽하게 로드됩니다!
                 </span>
               </div>
 
