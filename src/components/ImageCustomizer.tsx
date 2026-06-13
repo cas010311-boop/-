@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 import { X, Save, RotateCcw, Link, MessageSquare, Trash2, Calendar, FileText, Check, Lock, Unlock, Upload } from 'lucide-react';
 import { ProfileData, PhotoItem } from '../types';
 
-const compressImage = (base64Str: string, maxWidth: number = 1000, maxHeight: number = 1000, quality: number = 0.8): Promise<string> => {
+const compressImage = (base64Str: string, maxWidth: number = 600, maxHeight: number = 600, quality: number = 0.5): Promise<string> => {
   return new Promise((resolve) => {
     const img = new Image();
     img.onload = () => {
@@ -326,7 +326,7 @@ export default function ImageCustomizer({
                           reader.onloadend = async () => {
                             if (typeof reader.result === 'string') {
                               try {
-                                const compressed = await compressImage(reader.result, 800, 800, 0.85);
+                                const compressed = await compressImage(reader.result, 600, 600, 0.55);
                                 setTempProfile({ ...tempProfile, profileImage: compressed });
                               } catch (err) {
                                 setTempProfile({ ...tempProfile, profileImage: reader.result });
@@ -490,7 +490,7 @@ export default function ImageCustomizer({
                                 reader.onloadend = async () => {
                                   if (typeof reader.result === 'string') {
                                     try {
-                                      const compressed = await compressImage(reader.result, 1000, 1000, 0.8);
+                                      const compressed = await compressImage(reader.result, 600, 600, 0.5);
                                       handlePhotoChange(photo.id, compressed);
                                     } catch (err) {
                                       handlePhotoChange(photo.id, reader.result);
