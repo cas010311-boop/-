@@ -4,9 +4,10 @@ import { Menu, X, ArrowUpRight } from 'lucide-react';
 
 interface HeaderProps {
   onOpenCustomizer: () => void;
+  profileImage?: string;
 }
 
-export default function Header({ onOpenCustomizer }: HeaderProps) {
+export default function Header({ onOpenCustomizer, profileImage }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -41,9 +42,12 @@ export default function Header({ onOpenCustomizer }: HeaderProps) {
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-3">
              <img 
-               src="/profile.jpg" 
+               src={profileImage || "https://res.cloudinary.com/dlnzhxv0e/image/upload/v1781341957/oooo_o3mlt6.jpg?_s=public-apps"} 
                alt="Profile" 
                className="w-10 h-10 rounded-full object-cover border border-white/20"
+               onError={(e) => {
+                 e.currentTarget.src = "https://res.cloudinary.com/dlnzhxv0e/image/upload/v1781341957/oooo_o3mlt6.jpg?_s=public-apps";
+               }}
              />
              <a
                href="#"

@@ -7,7 +7,7 @@ export const INITIAL_PROFILE: ProfileData = {
   skills: "Adobe Premiere Pro, Adobe Photoshop, Adobe Illustrator, Adobe Lightroom, Capcut, 영상촬영, Kling AI, Midjourney",
   email: "ajin0217@naver.com",
   phone: "010-5506-9616",
-  profileImage: "profile.jpg", // If she uploads profile.jpg, it displays. We will use a gorgeous placeholder/fallback.
+  profileImage: "https://res.cloudinary.com/dlnzhxv0e/image/upload/v1781341957/oooo_o3mlt6.jpg?_s=public-apps", // Online hosted Cloudinary image URL of her real photo
   tiktokUrl: "https://www.tiktok.com/@ajjang_girl?is_from_webapp=1&sender_device=pc",
   instagramUrl: "https://www.instagram.com/choi_ajin01/",
   photoArchiveUrl: "https://www.instagram.com/zzini_325/",

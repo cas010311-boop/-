@@ -152,13 +152,16 @@ async function startServer() {
         }
       }
 
-      // Self-healing profile image correction to always map to the downloaded public/profile.jpg
+      // Self-healing profile image correction to always map to the official Cloudinary hosted real photo
       if (data.profile) {
-        if (data.profile.profileImage !== "profile.jpg") {
-          data.profile.profileImage = "profile.jpg";
+        const hasPlaceholder = !data.profile.profileImage || 
+                              data.profile.profileImage === "profile.jpg" || 
+                              data.profile.profileImage.includes("unsplash.com");
+        if (hasPlaceholder) {
+          data.profile.profileImage = "https://res.cloudinary.com/dlnzhxv0e/image/upload/v1781341957/oooo_o3mlt6.jpg?_s=public-apps";
           try {
             await setDoc(profileRef, { profile: data.profile }, { merge: true });
-            console.log("Self-healed profileImage in Firestore!");
+            console.log("Self-healed profileImage in Firestore to the direct Cloudinary URL!");
           } catch (err) {
             console.error("Failed to self-heal profileImage in Firestore:", err);
           }
@@ -208,6 +211,8 @@ async function startServer() {
   } else {
     const distPath = path.join(process.cwd(), "dist");
     app.use(express.static(distPath));
+    // Fallback static serving to serve any assets dynamically placed/edited inside /public in the container at runtime
+    app.use(express.static(path.join(process.cwd(), "public")));
     app.get("*", (req, res) => {
       res.sendFile(path.join(distPath, "index.html"));
     });

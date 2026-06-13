@@ -149,7 +149,7 @@ export default function App() {
     <div className="min-h-screen bg-dark text-white selection:bg-accent selection:text-black overflow-x-hidden antialiased">
       
       {/* HEADER NAVBAR */}
-      <Header onOpenCustomizer={() => setIsCustomizerOpen(true)} />
+      <Header onOpenCustomizer={() => setIsCustomizerOpen(true)} profileImage={profile.profileImage} />
 
       {/* BACKGROUND DECORATIVE FLOATER */}
       <div className="absolute top-[10%] left-[-10%] w-[40vw] h-[40vw] rounded-full bg-accent/5 blur-[120px] pointer-events-none z-0" />
